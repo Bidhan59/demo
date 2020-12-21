@@ -1,0 +1,302 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Shopping Portal",
+    "description": "Shopping portal to order shopping products online",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:4086",
+  "basePath": "/demo/api/v1",
+  "tags": [
+    {
+      "name": "Products",
+      "description": "API for products available in the system"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/shopping/products": {
+      "get": {
+        "tags": ["Products"],
+        "description": "Fetch all available products in the system",
+        "parameters": [
+          {
+            "name": "productName",
+            "in": "query",
+            "description": "Name of the products customer want to search"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Available Products"
+          },
+          "400": {
+            "description": "Error in fetching the products"
+          }
+        }
+      }
+    },
+    "/shopping/products/{productId}": {
+      "get": {
+        "tags": ["Products"],
+        "description": "View the details of the specific product",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "Search a specific product"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Product Detail"
+          },
+          "400": {
+            "description": "Error in fetching the products"
+          },
+          "404": {
+            "description": "ProductId is compulsory"
+          }
+        }
+      }
+    },
+    "/order/products": {
+      "post": {
+        "tags": ["Order"],
+        "description": "Places order or Save the products in the cart",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "description": "To validate the user"
+          },
+          {
+            "name": "product",
+            "in": "body",
+            "description": "Product detail to be entered",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Order Id will be provided"
+          },
+          "400": {
+            "description": "Please login to continue"
+          },
+          "403": {
+            "description": "Error while ordering"
+          }
+        }
+      }
+    },
+    "/customer/register": {
+      "post": {
+        "tags": ["Customer"],
+        "description": "Customer Registration",
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "body",
+            "description": "customer details to be entered",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Your user Id is {id}"
+          },
+          "400": {
+            "description": "Error in registering the user"
+          }
+        }
+      }
+    },
+    "/customer/login": {
+      "post": {
+        "tags": ["Customer"],
+        "description": "Customer Login",
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "body",
+            "description": "customer credentials to be entered",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Credentials"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Customer Details"
+          },
+          "400": {
+            "description": "Username and Password is mandetory"
+          }
+        }
+      }
+    },
+    "/order/details": {
+      "get": {
+        "tags": ["Order"],
+        "description": "Fetch all the order details",
+        "parameters": [
+          {
+            "name": "ordered",
+            "in": "query",
+            "required": true,
+            "description": "To get the products in cart or ordered based on 0/1"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "description": "To validate the user"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Ordered products"
+          },
+          "400": {
+            "description": "Please login to continue"
+          },
+          "403": {
+            "description": "Error in fetching the order"
+          }
+        }
+      }
+    },
+    "/order/detail": {
+      "get": {
+        "tags": ["Order"],
+        "description": "Fetch all the order details",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "description": "To validate the user"
+          },
+          {
+            "name": "orderId",
+            "in": "query",
+            "description": "orderId of the order to be fetched"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Ordered product details"
+          },
+          "400": {
+            "description": "Please login to continue"
+          },
+          "403": {
+            "description": "Error in fetching the order"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Product": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "integer"
+              },
+              "productName": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "integer"
+              },
+              "supplierId": {
+                "type": "integer"
+              },
+              "supplierName": {
+                "type": "string"
+              },
+              "supplierCity": {
+                "type": "string"
+              },
+              "supplierPhoneNo": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "payment": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Customer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNo": {
+          "type": "integer"
+        },
+        "address": {
+          "type": "string"
+        },
+        "zipcode": {
+          "type": "integer"
+        },
+        "city": {
+          "type": "integer"
+        },
+        "state": {
+          "type": "integer"
+        }
+      }
+    },
+    "Credentials": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
